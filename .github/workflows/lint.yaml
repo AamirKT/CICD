@@ -1,0 +1,33 @@
+name: Terraform lint and validate
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: 1.9.5
+
+    - name: Terraform format
+      run: terraform fmt -check -recursive
+ 
+    - name: Terraform init
+      run: terraform init -backend=false
+  
+    - name: Terraform validate
+      run: terraform validate
+
+    # - name: Install and run TFLint
+    #   run: |
+    #     curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
+    #     tflint --init
+    #     tflint -f compact
